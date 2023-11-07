@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episcopal Nursing Scheduler</title>
+    <script src="script.js"></script> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff; /* White background */
+            color: #A41E35; /* Temple University Maroon for text */
+            text-align: center;
+        }
+
+        h1 {
+            color: #A41E35; /* Temple University Maroon for headings */
+        }
+
+        #input-fields {
+            margin: 2% 0; /* 2% margin top and bottom */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-label {
+            color: #A41E35; /* Temple University Maroon for label text */
+        }
+
+        #table-container {
+            margin: 0 auto;
+            width: 80%; /* 80% width of the viewport */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px; /* Round the corners of the table */
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #A41E35; /* Temple University Maroon for table borders */
+            padding: 10px;
+        }
+
+        input[type="number"] {
+            width: 50%; /* Reduce the width to half */
+            padding: 10px; /* Add 10px padding */
+            border: 1px solid #A41E35; /* Temple University Maroon for input borders */
+            text-align: center; /* Center the text within the fields */
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+        }
+
+        .maroon-bg {
+            background-color: #A41E35; /* Temple University Maroon for background */
+            color: #fff; /* White text on maroon background */
+        }
+    </style>
+</head>
+<body>
+    <h1>Episcopal Nursing Scheduler</h1>
+    <div id="input-fields">
+        <div>
+            <label for="techs" class="input-label"># of Techs</label>
+            <input type="number" id="techs" min="0" step="1" placeholder="Enter a number" value="3">
+        </div>
+        <div>
+            <label for="gendered" class="input-label"># Gendered 1:1s</label>
+            <input type="number" id="gendered" min="0" step="1" placeholder="Enter a number" value="0">
+        </div>
+        <div>
+            <label for="regular" class="input-label"># Regular 1:1s</label>
+            <input type="number" id="regular" min="0" step="1" placeholder="Enter a number" value="0">
+        </div>
+    </div>
+    <div id="table-container">
+        <button id="generate-table-button">Generate Table</button>
+    </div>
+
+    <script>
+        function generateTable(data) {
+    const tableContainer = document.getElementById("table-container");
+    const table = document.createElement("table");
+
+    // Create the table header (column headers)
+    const headerRow = document.createElement("tr");
+    headerRow.append(document.createElement("th"))
+    for (let i = 0; i < data.length; i++) {
+        const th = document.createElement("th");
+        th.textContent = "Tech " + (i + 1);
+        headerRow.appendChild(th);
+    }
+    table.appendChild(headerRow);
+
+    // Create the table rows
+    let rowTitles = [
+        "7:30-9 ",
+        "9-10 ",
+        "10-11 ",
+        "11-12 ",
+        "12-1 ",
+        "1-2",
+        "2-3:30"
+    ]
+    for (let i = 0; i < data[0].length; i++) {
+        const row = document.createElement("tr");
+        const techCell = document.createElement("td");
+        techCell.textContent = rowTitles[i]
+        row.appendChild(techCell);
+
+        for (let j = 0; j < data.length; j++) {
+            const cell = document.createElement("td");
+            cell.textContent = data[j][i];
+            row.appendChild(cell);
+        }
+
+        table.appendChild(row);
+    }
+
+    tableContainer.innerHTML = "";
+    tableContainer.appendChild(table);
+    // const errorText = document.createElement("p");
+    // errorText.textContent = error;
+    // tableContainer.append(errorText);
+}
+
+
+        const generateTableButton = document.getElementById("generate-table-button");
+        generateTableButton.addEventListener("click", function () {
+            const techs = parseInt(document.getElementById("techs").value);
+            const oneToOnesGendered = parseInt(document.getElementById("gendered").value);
+            const oneToOnesRegular = parseInt(document.getElementById("regular").value);
+            let error = "";
+            // Generate a sample 2D array for demonstration
+            data  = generateSchedule(techs,oneToOnesGendered,oneToOnesRegular, 0);
+
+            generateTable(data);
+        });
+    </script>
+</body>
+</html>
