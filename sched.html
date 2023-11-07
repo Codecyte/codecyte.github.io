@@ -78,8 +78,9 @@
             <input type="number" id="regular" min="0" step="1" placeholder="Enter a number" value="0">
         </div>
     </div>
+    <div> <button id="generate-table-button">Generate Table</button></div>
     <div id="table-container">
-        <button id="generate-table-button">Generate Table</button>
+        
     </div>
 
     <script>
@@ -123,6 +124,7 @@
     }
 
     tableContainer.innerHTML = "";
+    
     tableContainer.appendChild(table);
     // const errorText = document.createElement("p");
     // errorText.textContent = error;
