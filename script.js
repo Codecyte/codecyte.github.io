@@ -1,33 +1,34 @@
-function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, depth) {
+function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOffset, breakStartOffset, ) {
     // Define the job options
     const breakString = "Break"
     const defaultString = "Available";
     const firstBreak = 3;
     const lastBreak = 6;
     const totalHours = 7;
+    console.log("offset: " + breakStartOffset);
+
     let errorString = "";
     let success = true;
     
 
     // Initialize the 2D array for the schedule
     let schedule = Array.from(Array(Techs), () => new Array(totalHours));
-    console.log(depth);
     for (let t = 0; t < Techs; t++){
       for (let h = 0; h < totalHours; h++){
         schedule[t][h] = defaultString;
       }
     }
 
-    if (depth == Techs){
+    if (jobStartOffset == Techs){
         console.log("It cannot be done");
         return schedule;
     }
 
     // Pass 1, Fill in the breaks
     // Overlap breaks occur when we have more techs than break slots
-    let breakHours = lastBreak - firstBreak;
+    let breakHours = lastBreak - firstBreak ;
     for (let tech = 0; tech < Techs; tech++) {
-      schedule[tech][firstBreak + (tech % breakHours)] = breakString;
+      schedule[((tech + breakStartOffset) % Techs)][firstBreak + (tech % breakHours)] = breakString;
     }
 
       // Pass 2, Assign Gendered 1:1
@@ -101,7 +102,7 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, depth) {
       }
       for (let j = 0; j < jobs.length; j++){
         let job = jobs[j];
-        let offset = depth;
+        let offset = jobStartOffset;
         for (let hour = 0; hour < totalHours; hour++){
             let jobAssigned = false;
             for (let t = 0; t < Techs; t++){
@@ -124,10 +125,10 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, depth) {
       }
       
       console.log(errorString);
-      if (!success){
-        console.log(schedule);
-        schedule = generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, depth + 1)
-      }
+    //   if (!success){
+    //     console.log(schedule);
+    //     schedule = generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOffset + 1)
+    //   }
     return schedule;
   }
   
@@ -135,8 +136,10 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, depth) {
   const Techs = 4;
   const OneToOnesGendered = 0;
   const OneToOnesRegular = 1;
+  const jobOffset = 0;
+  const breakoffset = 0;
   
-  const result = generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, 0);
+  const result = generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobOffset, breakoffset);
   console.log(result);
   console.log("ran it");
   
