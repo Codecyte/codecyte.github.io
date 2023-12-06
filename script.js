@@ -1,7 +1,7 @@
 function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOffset, breakStartOffset, ) {
     // Define the job options
     const breakString = "Break"
-    const defaultString = "Available";
+    const defaultString = "Support";
     const firstBreak = 3;
     const lastBreak = 6;
     const totalHours = 7;
@@ -107,7 +107,7 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
             let jobAssigned = false;
             for (let t = 0; t < Techs; t++){
               tech = (t + offset) % Techs
-                if (schedule[tech][hour] === "Available"){
+                if (schedule[tech][hour] === defaultString){
                     // Check if this job was assigned previously
                     if (hour === 0 || schedule[tech][hour - 1].slice(0,3) !== job.slice(0,3)){
                         schedule[tech][hour] = job;
@@ -125,13 +125,20 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
       }
       
       console.log(errorString);
-    //   if (!success){
-    //     console.log(schedule);
-    //     schedule = generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOffset + 1)
-    //   }
+      if (!success){
+        console.log("It's broken!");
+        schedule = Array.from(Array(Techs), () => new Array(totalHours));
+        for (let t = 0; t < Techs; t++){
+            for (let h = 0; h < totalHours; h++){
+                schedule[t][h] = "Not Possible";
+         }
+    }
+      }
     return schedule;
   }
   
+// TODO: Print button
+
   // Example usage:
   const Techs = 4;
   const OneToOnesGendered = 0;
