@@ -7,6 +7,18 @@
     <title>Episcopal Nursing Scheduler</title>
     <script src="script.js"></script>
     <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #fff;
@@ -26,7 +38,7 @@
             margin-bottom: 2.5%;
             padding: 1%;
             background-color: #A41E35;
-            color:#fff;
+            color: #fff;
             text-align: center;
         }
 
@@ -46,6 +58,8 @@
         #table-container {
             margin: 0 auto;
             width: 80%;
+            padding-top: 10px;
+            padding-bottom: 20px;
             /* 80% width of the viewport */
         }
 
@@ -89,6 +103,8 @@
         .row-container {
             display: flex;
             justify-content: space-between;
+            padding-left: 10%;
+            padding-right: 10%;
         }
 
         .group-container {
@@ -108,48 +124,123 @@
             width: 100px;
             /* Adjust the width as needed */
         }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #A41E35;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #ffffff;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #A41E35;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        .hidable {
+            display: flex;
+        }
+
+        .centered-group{
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 
 <body>
     <h1>Episcopal Nursing Scheduler</h1>
-    <div id="input-fields">
-        <div>
+    <div id="input-fields" class="row-container hidable">
+        <div class="group-container">
             <label for="techs" class="input-label"># of Techs</label>
-            <input type="number" id="techs" min="0" step="1" placeholder="Enter a number" value="3">
+            <div class="arrow-button" id="decTechButton">&larr;</div>
+            <input type="number" id="techs" min="0" step="1" placeholder="Enter a number" value="3" readonly>
+            <div class="arrow-button" id="incTechButton">&rarr;</div>
         </div>
-        <div>
+        <div class="group-container">
             <label for="gendered" class="input-label"># Gendered 1:1s</label>
-            <input type="number" id="gendered" min="0" step="1" placeholder="Enter a number" value="0">
+            <div class="arrow-button" id="decGenOneButton">&larr;</div>
+            <input type="number" id="gendered" min="0" step="1" placeholder="Enter a number" value="0" readonly>
+            <div class="arrow-button" id="incGenOneButton">&rarr;</div>
         </div>
-        <div>
+        <div class="group-container">
             <label for="regular" class="input-label"># Regular 1:1s</label>
-            <input type="number" id="regular" min="0" step="1" placeholder="Enter a number" value="0">
+            <div class="arrow-button" id="decOneButton">&larr;</div>
+            <input type="number" id="regular" min="0" step="1" placeholder="Enter a number" value="0" readonly>
+            <div class="arrow-button" id="incOneButton">&rarr;</div>
         </div>
     </div>
-    <div class="row-container">
+    <div class="row-container hidable">
         <div class="group-container">
             <label for="regular" class="input-label">Break Offset: </label>
             <div class="arrow-button" id="decBreakButton">&larr;</div>
-            <input type="number" id="breakOffset" class="text-box" placeholder="Break Offset" value="0">
+            <input type="number" id="breakOffset" class="text-box" placeholder="Break Offset" value="1" readonly>
             <div class="arrow-button" id="incBreakButton">&rarr;</div>
         </div>
 
-        <div class="group-container">
-            <label for="regular" class="input-label" >Job Offset: </label>
+        <div class="group-container hidable">
+            <label for="regular" class="input-label">Job Offset: </label>
             <div class="arrow-button" id="decJobButton">&larr;</div>
-            <input type="number" id="jobOffset" class="text-box" placeholder="Job Offset" value="0">
+            <input type="number" id="jobOffset" class="text-box" placeholder="Job Offset" value="0" readonly>
             <div class="arrow-button" id="incJobButton">&rarr;</div>
         </div>
     </div>
-    <div> <button id="generate-table-button">Generate Table</button></div>
+    <div class="centered-group">
+        <span class="hidable centered-group"> Finalize: </span>
+        <label class=switch>
+            <input type="checkbox" id="hideButton">
+            <span class="slider"></span>
+        </label>
+    </div>
 
     <div id="table-container">
 
     </div>
 
-    <div> 
-        Support =  Day Room / Groups / Food Service / Admissions </br>
+    <div>
+        Support = Day Room / Groups / Food Service / Admissions </br>
         Clinical = Hallway / Milieu
 
     </div>
@@ -201,14 +292,14 @@
             // errorText.textContent = error;
             // tableContainer.append(errorText);
         }
-        
 
-        function generateTableFunction(){
+
+        function generateTableFunction() {
             const techs = parseInt(document.getElementById("techs").value);
             const oneToOnesGendered = parseInt(document.getElementById("gendered").value);
             const oneToOnesRegular = parseInt(document.getElementById("regular").value);
             const jobOffset = parseInt(document.getElementById("jobOffset").value);
-            const breakOffset  = parseInt(document.getElementById("breakOffset").value);
+            const breakOffset = parseInt(document.getElementById("breakOffset").value);
             let error = "";
             // Generate a sample 2D array for demonstration
             data = generateSchedule(techs, oneToOnesGendered, oneToOnesRegular, jobOffset, breakOffset);
@@ -216,47 +307,86 @@
             generateTable(data);
         }
 
-        const generateTableButton = document.getElementById("generate-table-button");
-        generateTableButton.addEventListener("click", function () {
-            const techs = parseInt(document.getElementById("techs").value);
-            const oneToOnesGendered = parseInt(document.getElementById("gendered").value);
-            const oneToOnesRegular = parseInt(document.getElementById("regular").value);
-            const jobOffset = parseInt(document.getElementById("jobOffset").value);
-            const breakOffset  = parseInt(document.getElementById("breakOffset").value);
-            const depth = 0;
-            let error = "";
-            // Generate a sample 2D array for demonstration
-            data = generateSchedule(techs, oneToOnesGendered, oneToOnesRegular, jobOffset, breakOffset);
 
-            generateTable(data);
+        const incTechButton = document.getElementById("incTechButton");
+        incTechButton.addEventListener("click", function () {
+            var maxValue = parseInt(document.getElementById("techs").value - 1);
+            document.getElementById("techs").value = parseInt(document.getElementById("techs").value) + 1;
+            generateTableFunction();
+        });
+
+        const decTechButton = document.getElementById("decTechButton");
+        decTechButton.addEventListener("click", function () {
+            var maxValue = parseInt(document.getElementById("techs").value - 1);
+            document.getElementById("techs").value = Math.max(parseInt(document.getElementById("techs").value) - 1, 3);
+            generateTableFunction();
+        });
+
+        const incGenOneButton = document.getElementById("incGenOneButton");
+        incGenOneButton.addEventListener("click", function () {
+            var maxValue = parseInt(document.getElementById("techs").value - 1);
+            document.getElementById("gendered").value = parseInt(document.getElementById("gendered").value) + 1;
+            generateTableFunction();
+        });
+
+        const decGenOneButton = document.getElementById("decGenOneButton");
+        decGenOneButton.addEventListener("click", function () {
+            var maxValue = parseInt(document.getElementById("techs").value - 1);
+            document.getElementById("gendered").value = Math.max(parseInt(document.getElementById("gendered").value) - 1, 0);
+            generateTableFunction();
+        });
+
+        const incOneButton = document.getElementById("incOneButton");
+        incOneButton.addEventListener("click", function () {
+            var maxValue = parseInt(document.getElementById("techs").value - 1);
+            document.getElementById("regular").value = parseInt(document.getElementById("regular").value) + 1;
+            generateTableFunction();
+        });
+
+        const decOneButton = document.getElementById("decOneButton");
+        decOneButton.addEventListener("click", function () {
+            var maxValue = parseInt(document.getElementById("techs").value - 1);
+            document.getElementById("regular").value = Math.max(parseInt(document.getElementById("regular").value) - 1, 0);
+            generateTableFunction();
         });
 
         const incBreakButton = document.getElementById("incBreakButton");
-        incBreakButton.addEventListener("click", function() {
+        incBreakButton.addEventListener("click", function () {
             var maxValue = parseInt(document.getElementById("techs").value - 1);
             document.getElementById("breakOffset").value = Math.min(parseInt(document.getElementById("breakOffset").value) + 1, maxValue);
             generateTableFunction();
         });
 
         const decBreakButton = document.getElementById("decBreakButton");
-        decBreakButton.addEventListener("click", function() {
+        decBreakButton.addEventListener("click", function () {
             document.getElementById("breakOffset").value = Math.max(parseInt(document.getElementById("breakOffset").value) - 1, 0);
             generateTableFunction();
         });
 
         const incJobButton = document.getElementById("incJobButton");
-        incJobButton.addEventListener("click", function() {
+        incJobButton.addEventListener("click", function () {
             var maxValue = parseInt(document.getElementById("techs").value - 1);
             document.getElementById("jobOffset").value = Math.min(parseInt(document.getElementById("jobOffset").value) + 1, maxValue);
             generateTableFunction();
         });
 
         const decJobButton = document.getElementById("decJobButton");
-        decJobButton.addEventListener("click", function(){
+        decJobButton.addEventListener("click", function () {
             document.getElementById("jobOffset").value = Math.max(parseInt(document.getElementById("jobOffset").value) - 1, 0);
             generateTableFunction();
         });
-        
+
+        const hideButton = document.getElementById("hideButton");
+        hideButton.addEventListener("click", function () {
+            console.log("Entered function");
+            console.log(hideButton.checked);
+            let elements = document.getElementsByClassName("hidable")
+            for (let i = 0; i < elements.length; i++) {
+                elements[i].style.display =  hideButton.checked ? "none" : "flex";
+                console.log("Set : " + elements[i].id + " to value: " + (hideButton.checked ? "none" : "flex"));
+            }
+        });
+        generateTableFunction();
     </script>
 </body>
 
