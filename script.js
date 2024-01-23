@@ -108,8 +108,16 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
             for (let t = 0; t < Techs; t++){
               tech = (t + offset) % Techs
                 if (schedule[tech][hour] === defaultString){
+                  let prevHourValid = true;
+                  let postHourValid = true;
                     // Check if this job was assigned previously
-                    if (hour === 0 || schedule[tech][hour - 1].slice(0,3) !== job.slice(0,3)){
+                    if (hour > 0) {
+                      prevHourValid = schedule[tech][hour - 1].slice(0,3) !== job.slice(0,3)
+                    }
+                    if (hour < totalHours - 1){
+                      postHourValid = schedule[tech][hour + 1].slice(0,3) !== job.slice(0,3);
+                    }
+                    if (prevHourValid && postHourValid){
                         schedule[tech][hour] = job;
                         jobAssigned = true;
                         break;
