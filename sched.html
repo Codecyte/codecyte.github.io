@@ -246,10 +246,12 @@
 
             // Create the table header (column headers)
             const headerRow = document.createElement("tr");
-            headerRow.append(document.createElement("th"))
+            headerRow.append(document.createElement("th"));
+            let techval = parseInt(document.getElementById("techs").value - 1);
             for (let i = 0; i < data.length; i++) {
                 const th = document.createElement("th");
-                th.textContent = "Tech " + (i + 1);
+                if (i <= techval) th.textContent = "Tech " + (i + 1);
+                else th.textContent = "Nurse " + (i - techval);
                 headerRow.appendChild(th);
             }
             table.appendChild(headerRow);
@@ -296,7 +298,7 @@
             const breakOffset = parseInt(document.getElementById("breakOffset").value);
             let error = "";
             // Generate a sample 2D array for demonstration
-            data = generateSchedule(techs, oneToOnesGendered, oneToOnesRegular, jobOffset, breakOffset);
+            data = generateSchedule(techs, oneToOnesGendered, oneToOnesRegular, jobOffset, breakOffset, true);
 
             generateTable(data);
         }
