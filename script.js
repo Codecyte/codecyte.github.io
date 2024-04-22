@@ -172,8 +172,7 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
   }
   // Pass 5, assign Rounder and Clinical
 
-  
-  console.log(jobs);
+
   for (let j = 0; j < jobs.length; j++) {
     let job = jobs[j];
     let offset = jobStartOffset;
@@ -201,7 +200,6 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
       offset += 1;
       if (!jobAssigned) {
         if (coverageBool) {
-          console.log(" Entered Coverage assignment");
           coverageInd = -1;
           for (let c = 0; c < maxCoverage; c++) {
             if (coverageArray[c][hour] == coverageDefaultString) {
@@ -209,8 +207,6 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
               break;
             }
           }
-          console.log("Coverage Ind: " + coverageInd);
-
           if (coverageInd != -1) {
             coverageArray[coverageInd][hour] = job;
             jobAssigned = true;
@@ -240,7 +236,6 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
     } 
     return schedule;
   }
-  console.log(maxCoverageInd);
   let finalCovArray = coverageArray.slice(0, maxCoverageInd + 1);
   let combinedSched = schedule.concat(finalCovArray);
   return combinedSched;
@@ -256,5 +251,3 @@ const jobOffset = 0;
 const breakoffset = 0;
 
 const result = generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobOffset, breakoffset, true);
-console.log(result);
-console.log("ran it");
