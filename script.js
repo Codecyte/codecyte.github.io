@@ -1,6 +1,7 @@
 function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOffset, breakStartOffset, coverageBool) {
   // Define the job options
-  const breakString = "Break"
+  const breakString = "Break";
+  const lastBreakString = "Break/Support";
   const defaultString = "Support";
   const coverageDefaultString = "";
   const firstBreak = 3;
@@ -38,8 +39,18 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
   // Pass 1, Fill in the breaks
   // Overlap breaks occur when we have more techs than break slots
   let breakHours = lastBreak - firstBreak;
+  // Insert +1 break hour when > 4 techs. 
+  if (Techs >= 5){
+      breakHours = lastBreak - firstBreak + 1;
+  } 
+
+  
   for (let tech = 0; tech < Techs; tech++) {
-    schedule[((tech + breakStartOffset) % Techs)][firstBreak + (tech % breakHours)] = breakString;
+    if (tech == Tech - 1) {
+        schedule[((tech + breakStartOffset) % Techs)][firstBreak + (tech % breakHours)] = lastBreakString;
+    } else {
+        schedule[((tech + breakStartOffset) % Techs)][firstBreak + (tech % breakHours)] = breakString;
+    }
   }
 
   // Pass 2, Assign Gendered 1:1
