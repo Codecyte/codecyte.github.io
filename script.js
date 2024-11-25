@@ -46,7 +46,7 @@ function generateSchedule(Techs, OneToOnesGendered, OneToOnesRegular, jobStartOf
 
   
   for (let tech = 0; tech < Techs; tech++) {
-    if (tech == Tech - 1) {
+    if (tech == Techs - 1) {
         schedule[((tech + breakStartOffset) % Techs)][firstBreak + (tech % breakHours)] = lastBreakString;
     } else {
         schedule[((tech + breakStartOffset) % Techs)][firstBreak + (tech % breakHours)] = breakString;
